@@ -4,7 +4,7 @@ SCHEMA = [
     'location',
     'employee_status',
     'review_title',
-    'years_at_company',
+    'experience',
     'helpful',
     'pros',
     'cons',
