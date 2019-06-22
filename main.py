@@ -170,15 +170,14 @@ def scrape(field, review, author):
 
     def expand_show_more(section):
         try:
-            more_content = section.find_element_by_class_name('moreContent')
-            more_link = more_content.find_element_by_class_name('moreLink')
+            more_link = section.find_element_by_class_name('link')
             more_link.click()
         except Exception:
             pass
 
     def scrape_pros(review):
         try:
-            pros = review.find_element_by_class_name('pros')
+            pros = review.find_element_by_class_name('mt-md')
             expand_show_more(pros)
             res = pros.text.replace('\nShow Less', '')
         except Exception:
@@ -187,7 +186,7 @@ def scrape(field, review, author):
 
     def scrape_cons(review):
         try:
-            cons = review.find_element_by_class_name('cons')
+            cons = review.find_elements_by_class_name('mt-md')[-1]
             expand_show_more(cons)
             res = cons.text.replace('\nShow Less', '')
         except Exception:
