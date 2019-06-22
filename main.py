@@ -152,12 +152,7 @@ def scrape(field, review, author):
         return review.find_element_by_class_name('summary').text.strip('"')
 
     def scrape_years(review):
-        first_par = review.find_element_by_class_name(
-            'reviewBodyCell').find_element_by_tag_name('p')
-        if '(' in first_par.text:
-            res = first_par.text[first_par.text.find('(') + 1:-1]
-        else:
-            res = np.nan
+        res = review.find_element_by_class_name('mainText').text
         return res
 
     def scrape_helpful(review):
@@ -179,25 +174,30 @@ def scrape(field, review, author):
         try:
             pros = review.find_element_by_class_name('mt-md')
             expand_show_more(pros)
-            res = pros.text.replace('\nShow Less', '')
+            res = pros.find_elements_by_tag_name('p')[-1].text.replace('\nShow Less', '')
         except Exception:
             res = np.nan
         return res
 
     def scrape_cons(review):
         try:
-            cons = review.find_elements_by_class_name('mt-md')[-1]
+            elements = review.find_elements_by_class_name('mt-md')
+            cons = elements[1]
             expand_show_more(cons)
-            res = cons.text.replace('\nShow Less', '')
+            res = cons.find_elements_by_tag_name('p')[-1].text.replace('\nShow Less', '')
         except Exception:
             res = np.nan
         return res
 
     def scrape_advice(review):
         try:
-            advice = review.find_element_by_class_name('adviceMgmt')
-            expand_show_more(advice)
-            res = advice.text.replace('\nShow Less', '')
+            elements = review.find_elements_by_class_name('mt-md')
+            if len(elements) > 2:
+                advice = elements[-1]
+                expand_show_more(advice)
+                res = advice.find_elements_by_tag_name[-1].text.replace('\nShow Less', '')
+            else:
+                res = np.nan
         except Exception:
             res = np.nan
         return res
@@ -381,6 +381,7 @@ def get_browser():
     if args.headless:
         chrome_options.add_argument('--headless')
     chrome_options.add_argument('log-level=3')
+    chrome_options.add_argument('--lang=en-US')
     browser = wd.Chrome(options=chrome_options)
     return browser
 
