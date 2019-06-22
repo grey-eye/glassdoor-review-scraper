@@ -260,8 +260,11 @@ def scrape(field, review, author):
     ]
 
     fdict = dict((s, f) for (s, f) in zip(SCHEMA, funcs))
-
-    return fdict[field](review)
+    try:
+        res = fdict[field](review)
+    except:
+        res = ""
+    return res
 
 
 def extract_from_page():
@@ -311,8 +314,8 @@ def extract_from_page():
 
 
 def more_pages():
-    paging_control = browser.find_element_by_class_name('pagingControls')
-    next_ = paging_control.find_element_by_class_name('next')
+    paging_control = browser.find_element_by_class_name('pagination__PaginationStyle__pagination')
+    next_ = paging_control.find_element_by_class_name('pagination__PaginationStyle__next')
     try:
         next_.find_element_by_tag_name('a')
         return True
@@ -322,9 +325,9 @@ def more_pages():
 
 def go_to_next_page():
     logger.info(f'Going to page {page[0] + 1}')
-    paging_control = browser.find_element_by_class_name('pagingControls')
+    paging_control = browser.find_element_by_class_name('pagination__PaginationStyle__pagination')
     next_ = paging_control.find_element_by_class_name(
-        'next').find_element_by_tag_name('a')
+        'pagination__PaginationStyle__next').find_element_by_tag_name('a')
     browser.get(next_.get_attribute('href'))
     time.sleep(1)
     page[0] = page[0] + 1
